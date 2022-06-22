@@ -1,6 +1,5 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { randomUUID } = require('crypto');
 const fs = require('./helpers/readWrite');
 
 const app = express();
@@ -45,7 +44,7 @@ app.post('/login', async (request, response) => {
   };
   const currentUser = await fs.read();
   const tokenGenerator = () => {
-    const characters = '0123456789abcdefghijklmnopqrstuvwxyz';
+    const characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNPQRSTVWXYZ';
     let tokenRandom = '';
     for (let i = 1; i <= 16; i += 1) {
       const randomCharacter = Math.floor(Math.random() * characters.length);
