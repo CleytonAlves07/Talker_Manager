@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('./helpers/readWrite');
+const { isEmailValid, isPasswordValid } = require('./middlewares/validations');
 
 const app = express();
 app.use(bodyParser.json());
@@ -36,7 +37,7 @@ app.get('/talker/:id', async (request, response) => {
   }
 });
 
-app.post('/login', async (request, response) => {
+app.post('/login', isEmailValid, isPasswordValid, async (request, response) => {
   const { email, password } = request.body;
   const newUser = {
     email,
