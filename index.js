@@ -1,7 +1,15 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const fs = require('./helpers/readWrite');
-const { isEmailValid, isPasswordValid } = require('./middlewares/validations');
+const {
+  isEmailValid,
+  isPasswordValid,
+  isNameValid,
+  isAgeValid,
+  isTokenValid,
+  isTalkValid,
+  isWatchedAtValid,
+  isRateValid } = require('./middlewares/validations');
 
 const app = express();
 app.use(bodyParser.json());
@@ -13,7 +21,6 @@ const PORT = '3000';
 app.get('/', (_request, response) => {
   response.status(HTTP_OK_STATUS).send();
 });
-
 app.get('/talker', async (_request, response) => {
   try {
     const talker = await fs.read();
@@ -56,6 +63,30 @@ app.post('/login', isEmailValid, isPasswordValid, async (request, response) => {
   const updatedUser = [...currentUser, newUser];
   await fs.write(updatedUser);
   return response.status(200).json({ token: tokenGenerator() });
+});
+
+app.post('/talker',
+  isTokenValid,
+  isTalkValid,
+  isNameValid,
+  isAgeValid,
+  isWatchedAtValid,
+  isRateValid,
+  async (req, res) => {
+  const { name, age, talk: { watchedAt, rate } } = req.body;
+  const newUser = {
+    name,
+    age,
+    talk: {
+      watchedAt,
+      rate,
+    },
+  };
+  const currentUsers = await fs.read();
+  newUser.id = currentUsers.length;
+  const updatedUser = [...currentUsers, newUser];
+  await fs.write(updatedUser);
+  return res.status(201).json(newUser); 
 });
 
 app.listen(PORT, () => {
