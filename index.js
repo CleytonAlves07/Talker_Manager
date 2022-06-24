@@ -106,6 +106,16 @@ app.put('/talker/:id',
     return res.status(200).json(updateUser);
   });
 
+  app.delete('/talker/:id', isTokenValid, async (request, response) => {
+  const { id } = request.params;
+  const data = await fs.read();
+  const filterData = data.filter((product) => product.id !== Number(id));
+
+  await fs.write(filterData);
+    
+  return response.status(204).send();
+});
+
 app.listen(PORT, () => {
   console.log('Online');
 });
