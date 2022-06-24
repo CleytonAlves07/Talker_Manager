@@ -7,7 +7,7 @@ async function read() {
 
 async function write(data) {
   try {
-    await fs.writeFile('talker.json', JSON.stringify(data));
+    await fs.writeFile('talker.json', JSON.stringify(data, null, 2));
   } catch (e) {
     console.log(e.message);
   }

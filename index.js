@@ -89,6 +89,23 @@ app.post('/talker',
   return res.status(201).json(newUser); 
 });
 
+app.put('/talker/:id',
+  isTokenValid,
+  isTalkValid,
+  isNameValid,
+  isAgeValid,
+  isWatchedAtValid,
+  isRateValid,
+  async (req, res) => {
+    const { id } = req.params;
+    const data = await fs.read();
+    const updateUser = { id: Number(id), ...req.body };
+    const newData = data.filter((person) => person.id !== Number(id));
+    const allData = [updateUser, ...newData];
+    await fs.write(allData);
+    return res.status(200).json(updateUser);
+  });
+
 app.listen(PORT, () => {
   console.log('Online');
 });
